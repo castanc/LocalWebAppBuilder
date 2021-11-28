@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace LocalWebBuilder
@@ -65,10 +64,10 @@ namespace LocalWebBuilder
                 }
 
                 string minimizedJS = "";
-                    string[] obfFiles = Directory.GetFiles(Path.GetDirectoryName(f), "*.js1");
-                    foreach (string obfFile in obfFiles)
+                    string[] minimizedJSFiles = Directory.GetFiles(Path.GetDirectoryName(f), "*.js1");
+                    foreach (string minimizedJSFile in minimizedJSFiles)
                     {
-                    minimizedJS += File.ReadAllText(obfFile);
+                    minimizedJS += File.ReadAllText(minimizedJSFile);
 
                     }
 
@@ -104,7 +103,7 @@ namespace LocalWebBuilder
             foreach (var f in inputFiles)
             {
                 string path = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(f)));
-                string pathObfuscate = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\3_Obfuscate";
+                string pathObfuscate = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\3_ToObfuscate";
                 pathObfuscate.ResetDir();
 
 
@@ -145,75 +144,7 @@ namespace LocalWebBuilder
             return result;
         }
 
-        public static void ResetDir(this string path)
-        {
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-            else
-            {
-                var oldFiles = Directory.GetFiles(path, "*.*");
-                foreach (var oldFile in oldFiles)
-                {
-                    try
-                    {
-                        File.Delete(oldFile);
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
-            }
-
-        }
-
-        //http://csharpexamples.com/c-create-md5-hash-string/
-        public static string CreateMD5Hash(this string input)
-        {
-            // Step 1, calculate MD5 hash from input
-            MD5 md5 = System.Security.Cryptography.MD5.Create();
-            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-            byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-            // Step 2, convert byte array to hex string
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hashBytes.Length; i++)
-            {
-                sb.Append(hashBytes[i].ToString("X2"));
-            }
-            return sb.ToString();
-        }
-
-
-        public static List<string> extractAllBetween(this string text, string start, 
-            string end)
-        {
-            int startIndex = 0;
-            string result = "XX";
-            start = start.ToLower();
-            end = end.ToLower();
-            string text2 = text.ToLower();
-            List<string> results = new List<string>();
-
-            int index = 0;
-            while(index >=0 )
-            {
-                index = text2.ToLower().IndexOf(start,startIndex);
-                if (index >= startIndex)
-                {
-                    index += start.Length;
-                    int index2 = text2.IndexOf(end, index);
-                    if (index2 > index)
-                    {
-                        result = text.Substring(index, index2 - index);
-                        results.Add(result);
-                        startIndex = index2 + 1;
-                    }
-                }
-            }
-
-            return results;
-        }
+      
 
         public static int GenerateLocalApp(this string[] inputFiles,
      string excludedFiles)
@@ -237,6 +168,10 @@ namespace LocalWebBuilder
                 StringBuilder sbJoined = new StringBuilder();
 
                 string html = File.ReadAllText(f);
+                int index = html.ToLower().IndexOf("</html");
+                if (index >= 0)
+                    html = html.Substring(0, index + 6);
+
                 html = html + addScripts;
 
                 cssFiles = html.extractAllBetween("\"stylesheet\" href=\"", "\">");
@@ -247,27 +182,29 @@ namespace LocalWebBuilder
                 if ( jsFiles.Count == 0 )
                     jsFiles = html.extractAllBetween("<script src=", ">");
 
-                string path = Path.GetDirectoryName(Path.GetDirectoryName(f));
+                string path = Path.GetDirectoryName(f);
                 string pathOut = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\1_ToMinify";
+                string pathToObfuscate = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\3_ToObfuscate";
+
 
                 pathOut.ResetDir();
+                pathToObfuscate.ResetDir();
 
 
                 foreach (string cssFile in cssFiles)
                 {
 
                     fName = $"{path}\\{cssFile}";
-                    if ( !File.Exists(fName))
+                    if (!File.Exists(fName))
+                    {
+                        fName = fName.ToLower().Replace(".min", "");
                         fName = fName.Replace(Path.GetExtension(fName), $".min{Path.GetExtension(fName)}");
+                    }
 
                     if ( File.Exists(fName))
                     {
                         string text = File.ReadAllText(fName);
-                        if (excludedFiles.Contains(cssFile.ToLower()))
-                            exCssFiles.Add(text);
-                        else
-                            sbCSS.AppendLine(text);
-
+                        sbCSS.AppendLine(text);
                         File.WriteAllText($"{pathOut}\\{Path.GetFileNameWithoutExtension(cssFile)}.css",text);
                     }
                 }
@@ -290,33 +227,25 @@ namespace LocalWebBuilder
                     }
                 }
 
-//                html = html.Replace("</head>", $@"<style>
-//{sbCSS}
-//</style>
-//</head>
-//");
                 foreach(string ex in exJsFiles)
                 {
                     html = html + $@"<script>
 {ex}
 </script>
 ";
-
                 }
 
-//                html = html.Replace("</head>", $@"<script>
-//{sbJS}
-//</script>
-//</head>
-//");
-
-
-
                 fName = $"{pathOut}\\{Path.GetFileNameWithoutExtension(f)}.html";
+                File.WriteAllText(fName, html);
+                fName = $"{pathToObfuscate}\\{Path.GetFileNameWithoutExtension(f)}.html";
                 File.WriteAllText(fName, html);
 
                 fName = $"{pathOut}\\JoinedJS_{Path.GetFileNameWithoutExtension(f)}.js1";
                 File.WriteAllText(fName, sbJS.ToString());
+                fName = $"{pathToObfuscate}\\JoinedJS_{Path.GetFileNameWithoutExtension(f)}.js1";
+                File.WriteAllText(fName, sbJS.ToString());
+
+
 
                 fName = $"{pathOut}\\JoinedJSFiles_{Path.GetFileNameWithoutExtension(f)}.txt";
                 File.WriteAllText(fName, sbJoined.ToString());
