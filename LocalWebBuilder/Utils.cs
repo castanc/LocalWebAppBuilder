@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.IO;
+using System.Net.Http;
 
 namespace LocalWebBuilder
 {
+
     public static class Utils
     {
         public static void ResetDir(this string path)
@@ -79,5 +81,79 @@ namespace LocalWebBuilder
 
             return results;
         }
+
+
+        public static string RemoveAllBetween(this string text, string start,
+            string end, string exception = ":/")
+        {
+            int startIndex = 0;
+            start = start.ToLower();
+            end = end.ToLower();
+            string text2 = text.ToLower();
+
+            int index = text2.IndexOf(start);
+            List<string> results = new List<string>();
+            string result = "";
+            while (index >= 0)
+            {
+                if (index >= startIndex)
+                {
+                    int index2 = text2.IndexOf(end, index);
+                    if (index2 > index)
+                    {
+                        result = text.Substring(index, index2 - index+end.Length);
+
+                        if (!result.ToLower().Contains(exception))
+                        {
+                            if (text.Contains(result))
+                            {
+                                text = text.Replace(result, "");
+                                results.Add(result);
+                                text2 = text.ToLower();
+                                index = text2.ToLower().IndexOf(start, startIndex);
+                                //text = text.Substring(0, index) + text.Substring(index2 + end.Length);\
+                            }
+                        }
+                        else
+                        {
+                            startIndex = index2 + end.Length;
+                            index = text2.ToLower().IndexOf(start, startIndex);
+                        }
+                    }
+                    
+                }
+            }
+
+            return text;
+        }
+
+        public static async Task<String> Minify(this string url, string inputText)
+        {
+            const string URL_CSS_MINIFIER =  "https://www.toptal.com/developers/cssminifier/raw";
+            const string POST_PAREMETER_NAME = "input";
+
+        List<KeyValuePair<String, String>> contentData = new List<KeyValuePair<String, String>>
+        {
+            new KeyValuePair<String, String>(POST_PAREMETER_NAME, inputText)
+        };
+
+            using (HttpClient httpClient = new HttpClient())
+            {
+                using (FormUrlEncodedContent content = new FormUrlEncodedContent(contentData))
+                {
+                    using (HttpResponseMessage response = await httpClient.PostAsync(url, content))
+                    {
+                        response.EnsureSuccessStatusCode();
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                }
+            }
+        }
     }
-}
+
+    }
+
+    
+
+
+

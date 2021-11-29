@@ -49,8 +49,9 @@ namespace WebAppBuilder
             if ( txMainFiles.Lines.Length > 0 )
             {
                 Cursor = Cursors.WaitCursor;
-                var result = txMainFiles.Lines.GenerateLocalApp(txExckudeJS.Text);
+                var result = txMainFiles.Lines.GenerateLocalApp3(txExckudeJS.Text);
                 Cursor = Cursors.Arrow;
+                Clipboard.SetText(lwb.path);
             }
         }
 
@@ -64,6 +65,8 @@ namespace WebAppBuilder
             Cursor = Cursors.WaitCursor;
             var result = txMainFiles.Lines.AddObfuscated(txObfuscatedJS.Text);
             Cursor = Cursors.Arrow;
+            Clipboard.SetText(lwb.path);
+
         }
 
         private void btnExcludeFromObfuscate_Click(object sender, EventArgs e)
@@ -79,8 +82,18 @@ namespace WebAppBuilder
         private void btnMinimized_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-            var result = txMainFiles.Lines.AddMinimized();
+            var result = txMainFiles.Lines.AddMinimized3();
             Cursor = Cursors.Arrow;
+            Clipboard.SetText(lwb.path);
+            if ( result < 0 )
+            {
+                if( lwb.Ex != null )
+                {
+                    MessageBox.Show(lwb.Ex.Message, "Error Processing file");
+                }
+                else MessageBox.Show(lwb.Message, "Error Processing file");
+            }
+
         }
     }
 }
