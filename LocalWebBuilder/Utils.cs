@@ -141,10 +141,17 @@ namespace LocalWebBuilder
             {
                 using (FormUrlEncodedContent content = new FormUrlEncodedContent(contentData))
                 {
-                    using (HttpResponseMessage response = await httpClient.PostAsync(url, content))
+                    try
                     {
-                        response.EnsureSuccessStatusCode();
-                        return await response.Content.ReadAsStringAsync();
+                        using (HttpResponseMessage response = await httpClient.PostAsync(url, content))
+                        {
+                            response.EnsureSuccessStatusCode();
+                            return await response.Content.ReadAsStringAsync();
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        return "";
                     }
                 }
             }

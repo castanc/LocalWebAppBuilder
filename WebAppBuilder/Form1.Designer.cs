@@ -40,6 +40,7 @@ namespace WebAppBuilder
             this.label3 = new System.Windows.Forms.Label();
             this.txObfuscatedJS = new System.Windows.Forms.TextBox();
             this.btnMinimized = new System.Windows.Forms.Button();
+            this.chbAutoMinify = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -82,7 +83,7 @@ namespace WebAppBuilder
             // 
             // btnObfuscated
             // 
-            this.btnObfuscated.Location = new System.Drawing.Point(372, 625);
+            this.btnObfuscated.Location = new System.Drawing.Point(565, 625);
             this.btnObfuscated.Name = "btnObfuscated";
             this.btnObfuscated.Size = new System.Drawing.Size(140, 23);
             this.btnObfuscated.TabIndex = 9;
@@ -138,7 +139,7 @@ namespace WebAppBuilder
             // 
             // btnMinimized
             // 
-            this.btnMinimized.Location = new System.Drawing.Point(235, 624);
+            this.btnMinimized.Location = new System.Drawing.Point(238, 625);
             this.btnMinimized.Name = "btnMinimized";
             this.btnMinimized.Size = new System.Drawing.Size(111, 23);
             this.btnMinimized.TabIndex = 15;
@@ -146,11 +147,22 @@ namespace WebAppBuilder
             this.btnMinimized.UseVisualStyleBackColor = true;
             this.btnMinimized.Click += new System.EventHandler(this.btnMinimized_Click);
             // 
+            // chbAutoMinify
+            // 
+            this.chbAutoMinify.AutoSize = true;
+            this.chbAutoMinify.Location = new System.Drawing.Point(70, 567);
+            this.chbAutoMinify.Name = "chbAutoMinify";
+            this.chbAutoMinify.Size = new System.Drawing.Size(89, 19);
+            this.chbAutoMinify.TabIndex = 16;
+            this.chbAutoMinify.Text = "Auto Minify";
+            this.chbAutoMinify.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(792, 688);
+            this.Controls.Add(this.chbAutoMinify);
             this.Controls.Add(this.btnMinimized);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txObfuscatedJS);
@@ -183,6 +195,7 @@ namespace WebAppBuilder
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txObfuscatedJS;
         private System.Windows.Forms.Button btnMinimized;
+        private System.Windows.Forms.CheckBox chbAutoMinify;
     }
 }
 

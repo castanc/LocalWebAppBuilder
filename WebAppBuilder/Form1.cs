@@ -44,14 +44,27 @@ namespace WebAppBuilder
         {
         }
 
-        private void btnGenerateLocalWebApp_Click(object sender, EventArgs e)
+        private async  void btnGenerateLocalWebApp_Click(object sender, EventArgs e)
         {
             if ( txMainFiles.Lines.Length > 0 )
             {
                 Cursor = Cursors.WaitCursor;
-                var result = txMainFiles.Lines.GenerateLocalApp3(txExckudeJS.Text);
+                txObfuscatedJS.Text = "";
+                if (chbAutoMinify.Checked)
+                {
+                    var result = await txMainFiles.Lines.GenerateLocalApp3(txExckudeJS.Text);
+                }
+                else
+                {
+                    var result = txMainFiles.Lines.GenerateLocalApp2(txExckudeJS.Text);
+                }
                 Cursor = Cursors.Arrow;
-                Clipboard.SetText(lwb.path);
+                txObfuscatedJS.Text = lwb.FileName;
+                if (lwb.FileName.Length > 0)
+                {
+                    Clipboard.SetText(lwb.FileName);
+                    MessageBox.Show("Process Compelted:" + lwb.FileName);
+                }
             }
         }
 
@@ -65,7 +78,7 @@ namespace WebAppBuilder
             Cursor = Cursors.WaitCursor;
             var result = txMainFiles.Lines.AddObfuscated(txObfuscatedJS.Text);
             Cursor = Cursors.Arrow;
-            Clipboard.SetText(lwb.path);
+            txObfuscatedJS.Text = lwb.FileName;
 
         }
 
@@ -83,6 +96,7 @@ namespace WebAppBuilder
         {
             Cursor = Cursors.WaitCursor;
             var result = txMainFiles.Lines.AddMinimized3();
+            Clipboard.SetText(lwb.FileName);
             Cursor = Cursors.Arrow;
             Clipboard.SetText(lwb.path);
             if ( result < 0 )
