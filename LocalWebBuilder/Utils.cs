@@ -127,6 +127,23 @@ namespace LocalWebBuilder
             return text;
         }
 
+        public static async Task<List<string>> FileToBase64(this string[] files)
+        {
+            List<string> result = new List<string>();
+            if (files.Length < 0)
+                return result;
+
+            foreach(string file in files)
+            {
+                byte[] imageArray = await System.IO.File.ReadAllBytesAsync(file);
+                string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+                string fName = $"{Path.GetDirectoryName(file)}\\{Path.GetFileNameWithoutExtension(file)}.base64.txt";
+                await File.WriteAllTextAsync(fName, base64ImageRepresentation);
+                result.Add(fName);
+            }
+            return result;
+        }
+
         public static async Task<String> Minify(this string url, string inputText)
         {
             const string URL_CSS_MINIFIER =  "https://www.toptal.com/developers/cssminifier/raw";

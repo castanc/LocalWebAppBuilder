@@ -13,6 +13,7 @@ namespace LocalWebBuilder
         public static string Message = "";
         public static string FileName = "";
             public static int Result = 0;
+        public static string FinalHTML = "";
 
         public static string addScripts = @"
 <script id='xzY1'></script>
@@ -163,6 +164,7 @@ namespace LocalWebBuilder
                     html = html.Replace("<script id='xzY1'></script>", $@"<script id='xzY1'>{minimizedJS}</script>");
                 else if (html.Contains("<script id=xzY1></script>"))
                     html = html.Replace("<script id=xzY1></script>", $@"<script id='xzY1'>{minimizedJS}</script>");
+                FinalHTML = html;
 
                 FileName = $"{pathMinimized}\\{Path.GetFileNameWithoutExtension(f)}.html";
 

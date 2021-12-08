@@ -62,7 +62,7 @@ namespace WebAppBuilder
                 txObfuscatedJS.Text = lwb.FileName;
                 if (lwb.FileName.Length > 0)
                 {
-                    Clipboard.SetText(lwb.FileName);
+                    Clipboard.SetText(lwb.FinalHTML);
                     MessageBox.Show("Process Compelted:" + lwb.FileName);
                 }
             }
@@ -108,6 +108,13 @@ namespace WebAppBuilder
                 else MessageBox.Show(lwb.Message, "Error Processing file");
             }
 
+        }
+
+        private void btnBase64_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            var result = txMainFiles.Lines.FileToBase64();
+            txObfuscatedJS.Text = "Base64 finished.";
         }
     }
 }

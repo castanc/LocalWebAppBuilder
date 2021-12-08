@@ -41,6 +41,7 @@ namespace WebAppBuilder
             this.txObfuscatedJS = new System.Windows.Forms.TextBox();
             this.btnMinimized = new System.Windows.Forms.Button();
             this.chbAutoMinify = new System.Windows.Forms.CheckBox();
+            this.btnBase64 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -157,11 +158,22 @@ namespace WebAppBuilder
             this.chbAutoMinify.Text = "Auto Minify";
             this.chbAutoMinify.UseVisualStyleBackColor = true;
             // 
+            // btnBase64
+            // 
+            this.btnBase64.Location = new System.Drawing.Point(384, 624);
+            this.btnBase64.Name = "btnBase64";
+            this.btnBase64.Size = new System.Drawing.Size(75, 23);
+            this.btnBase64.TabIndex = 17;
+            this.btnBase64.Text = "Base64";
+            this.btnBase64.UseVisualStyleBackColor = true;
+            this.btnBase64.Click += new System.EventHandler(this.btnBase64_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(792, 688);
+            this.Controls.Add(this.btnBase64);
             this.Controls.Add(this.chbAutoMinify);
             this.Controls.Add(this.btnMinimized);
             this.Controls.Add(this.label3);
@@ -196,6 +208,7 @@ namespace WebAppBuilder
         private System.Windows.Forms.TextBox txObfuscatedJS;
         private System.Windows.Forms.Button btnMinimized;
         private System.Windows.Forms.CheckBox chbAutoMinify;
+        private System.Windows.Forms.Button btnBase64;
     }
 }
 
