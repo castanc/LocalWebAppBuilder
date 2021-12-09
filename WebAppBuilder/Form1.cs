@@ -95,7 +95,7 @@ namespace WebAppBuilder
         private void btnMinimized_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-            var result = txMainFiles.Lines.AddMinimized3();
+            var result = txMainFiles.Lines.AddMinified3();
             Clipboard.SetText(lwb.FileName);
             Cursor = Cursors.Arrow;
             Clipboard.SetText(lwb.path);
@@ -115,6 +115,7 @@ namespace WebAppBuilder
             Cursor = Cursors.WaitCursor;
             var result = txMainFiles.Lines.FileToBase64();
             txObfuscatedJS.Text = "Base64 finished.";
+            Cursor = Cursors.Arrow;
         }
     }
 }

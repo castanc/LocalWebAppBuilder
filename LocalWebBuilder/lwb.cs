@@ -49,15 +49,15 @@ namespace LocalWebBuilder
 </script>";
 
 
-        public static int AddMinimized(this string[] inputFiles )
+        public static int AddMinified(this string[] inputFiles )
         {
             if (inputFiles.Length < 1)
                 return -1;
 
             foreach (var f in inputFiles)
             {
-                string pathMinimized = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\2_Minimized";
-                pathMinimized.ResetDir();
+                string pathMinified = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\2_Minified";
+                pathMinified.ResetDir();
 
 
                 string[] cssFiles = Directory.GetFiles(Path.GetDirectoryName(f), "*.css");
@@ -69,13 +69,13 @@ namespace LocalWebBuilder
                     sbCss.AppendLine(text);
                 }
 
-                string minimizedJS = "";
-                    string[] minimizedJSFiles = Directory.GetFiles(Path.GetDirectoryName(f), "*.js1");
-                    foreach (string minimizedJSFile in minimizedJSFiles)
+                string minifiedJS = "";
+                    string[] minifiedJSFiles = Directory.GetFiles(Path.GetDirectoryName(f), "*.js1");
+                    foreach (string minifiedJSFile in minifiedJSFiles)
                     {
                     try
                     {
-                        minimizedJS += File.ReadAllText(minimizedJSFile);
+                        minifiedJS += File.ReadAllText(minifiedJSFile);
                     }
                     catch(Exception ex)
                     {
@@ -87,7 +87,7 @@ namespace LocalWebBuilder
 
                     }
 
-                string md5 = minimizedJS.CreateMD5Hash();
+                string md5 = minifiedJS.CreateMD5Hash();
                 string html = File.ReadAllText(f);
 
                 html = html.RemoveAllBetween("<script src=", ">");
@@ -98,30 +98,30 @@ namespace LocalWebBuilder
                 html = html.Replace("var xzY1 = '';", $"var xzY1 = '{md5}';");
 
                 if (html.Contains("<script id='xzY1'></script>"))
-                    html = html.Replace("<script id='xzY1'></script>", $@"<script id='xzY1'>{minimizedJS}</script>");
+                    html = html.Replace("<script id='xzY1'></script>", $@"<script id='xzY1'>{minifiedJS}</script>");
                 else if ( html.Contains("<script id=xzY1></script>"))
-                    html = html.Replace("<script id=xzY1></script>", $@"<script id='xzY1'>{minimizedJS}</script>");
+                    html = html.Replace("<script id=xzY1></script>", $@"<script id='xzY1'>{minifiedJS}</script>");
     
-                string newName = $"{pathMinimized}\\{Path.GetFileNameWithoutExtension(f)}.html";
+                string newName = $"{pathMinified}\\{Path.GetFileNameWithoutExtension(f)}.html";
 
                 File.WriteAllText(newName, html);
 
-                newName = $"{pathMinimized}\\{Path.GetFileNameWithoutExtension(f)}.md5";
+                newName = $"{pathMinified}\\{Path.GetFileNameWithoutExtension(f)}.md5";
                 File.WriteAllText(newName, md5);
 
             }
             return Result;
         }
 
-        public static int AddMinimized3(this string[] inputFiles)
+        public static int AddMinified3(this string[] inputFiles)
         {
             if (inputFiles.Length < 1)
                 return -1;
 
             foreach (var f in inputFiles)
             {
-                string pathMinimized = $"{path}\\{Path.GetFileNameWithoutExtension(f).Replace(".min","")}_Deploy\\2_Minimized";
-                pathMinimized.ResetDir();
+                string pathMinified = $"{path}\\{Path.GetFileNameWithoutExtension(f).Replace(".min","")}_Deploy\\2_Minified";
+                pathMinified.ResetDir();
 
 
                 string[] cssFiles = Directory.GetFiles(Path.GetDirectoryName(f), "*.cs1");
@@ -133,13 +133,13 @@ namespace LocalWebBuilder
                     sbCss.AppendLine(text);
                 }
 
-                string minimizedJS = "";
-                string[] minimizedJSFiles = Directory.GetFiles(Path.GetDirectoryName(f), "*.js1");
-                foreach (string minimizedJSFile in minimizedJSFiles)
+                string minifiedJS = "";
+                string[] minifiedJSFiles = Directory.GetFiles(Path.GetDirectoryName(f), "*.js1");
+                foreach (string minifiedJSFile in minifiedJSFiles)
                 {
                     try
                     {
-                        minimizedJS += File.ReadAllText(minimizedJSFile);
+                        minifiedJS += File.ReadAllText(minifiedJSFile);
                     }
                     catch (Exception ex)
                     {
@@ -151,7 +151,7 @@ namespace LocalWebBuilder
 
                 }
 
-                string md5 = minimizedJS.CreateMD5Hash();
+                string md5 = minifiedJS.CreateMD5Hash();
                 string html = File.ReadAllText(f);
 
                 html = html.RemoveAllBetween("<link rel=", ">");
@@ -161,16 +161,16 @@ namespace LocalWebBuilder
                 html = html.Replace("var xzY1 = '';", $"var xzY1 = '{md5}';");
 
                 if (html.Contains("<script id='xzY1'></script>"))
-                    html = html.Replace("<script id='xzY1'></script>", $@"<script id='xzY1'>{minimizedJS}</script>");
+                    html = html.Replace("<script id='xzY1'></script>", $@"<script id='xzY1'>{minifiedJS}</script>");
                 else if (html.Contains("<script id=xzY1></script>"))
-                    html = html.Replace("<script id=xzY1></script>", $@"<script id='xzY1'>{minimizedJS}</script>");
+                    html = html.Replace("<script id=xzY1></script>", $@"<script id='xzY1'>{minifiedJS}</script>");
                 FinalHTML = html;
 
-                FileName = $"{pathMinimized}\\{Path.GetFileNameWithoutExtension(f)}.html";
+                FileName = $"{pathMinified}\\{Path.GetFileNameWithoutExtension(f)}.html";
 
                 File.WriteAllText(FileName, html);
 
-                string newName = $"{pathMinimized}\\{Path.GetFileNameWithoutExtension(f)}.md5";
+                string newName = $"{pathMinified}\\{Path.GetFileNameWithoutExtension(f)}.md5";
                 File.WriteAllText(newName, md5);
 
             }
@@ -457,9 +457,6 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 if (index >= 0)
                     html = html.Substring(0, index + 7);
 
-                string html2 = await "https://www.toptal.com/developers/html-minifier/raw".Minify(html);
-                if (html2.Length > 0)
-                    html = html2 + addScripts;
 
                 cssFiles = html.extractAllBetween("\"stylesheet\" href=\"", "\">");
                 if (cssFiles.Count == 0)
@@ -468,6 +465,11 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 jsFiles = html.extractAllBetween("<script src=\"", "\">");
                 if (jsFiles.Count == 0)
                     jsFiles = html.extractAllBetween("<script src=", ">");
+
+                string html2 = await "https://www.toptal.com/developers/html-minifier/raw".Minify(html);
+                if (html2.Length > 0)
+                    html = html2 + addScripts;
+
 
                 string pathOut = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\2_Minified";
                 string pathToObfuscate = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\3_ToObfuscate";
@@ -543,7 +545,7 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 File.WriteAllText($"{pathOut}\\JoinedJSFiles_{Path.GetFileNameWithoutExtension(f)}.txt", sbJoined.ToString());
 
                 string[] files = FileName.Split("*");
-                files.AddMinimized3();
+                files.AddMinified3();
 
             }
 
