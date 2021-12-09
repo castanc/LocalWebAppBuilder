@@ -52,7 +52,7 @@ namespace WebAppBuilder
                 txObfuscatedJS.Text = "";
                 if (chbAutoMinify.Checked)
                 {
-                    var result = await txMainFiles.Lines.GenerateLocalApp3(txExckudeJS.Text);
+                    var result = await txMainFiles.Lines.GenerateLocalAppAutoMinify(txExckudeJS.Text);
                 }
                 else
                 {
