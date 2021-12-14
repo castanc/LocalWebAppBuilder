@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace LocalWebBuilder
         public static Exception Ex;
         public static string Message = "";
         public static string FileName = "";
+        public static string FinalFolder = "";
             public static int Result = 0;
         public static string FinalHTML = "";
 
@@ -175,6 +177,7 @@ namespace LocalWebBuilder
 
                 string newName = $"{outPath}\\{Path.GetFileNameWithoutExtension(f)}.md5";
                 File.WriteAllText(newName, md5);
+                FinalFolder = outPath;
 
 
             }

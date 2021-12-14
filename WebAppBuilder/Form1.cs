@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,9 +61,9 @@ namespace WebAppBuilder
                 }
                 Cursor = Cursors.Arrow;
                 txObfuscatedJS.Text = lwb.FileName;
-                if (lwb.FileName.Length > 0)
+                if (lwb.FinalFolder.Length > 0)
                 {
-                    Clipboard.SetText(lwb.FinalHTML);
+                    Clipboard.SetText(lwb.FinalFolder);
                     MessageBox.Show("Process Compelted:" + lwb.FileName);
                 }
             }
