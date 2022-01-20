@@ -478,7 +478,7 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
 
                 File.WriteAllText($"{pathToMinify}\\{Path.GetFileNameWithoutExtension(f)}.html",html);
 
-                string html2 = await "https://www.toptal.com/developers/html-minifier/raw".Minify(html);
+                string html2 = html;    // await "https://www.toptal.com/developers/html-minifier/raw".Minify(html);
                 if (html2.Length > 0)
                     html = html2 + addScripts;
 
