@@ -61,11 +61,12 @@ namespace WebAppBuilder
                 }
                 Cursor = Cursors.Arrow;
                 txObfuscatedJS.Text = lwb.FileName;
-                if (lwb.FinalFolder.Length > 0)
-                {
-                    Clipboard.SetText(lwb.FinalFolder);
-                    MessageBox.Show("Process Compelted:" + lwb.FileName);
-                }
+                Clipboard.SetText(lwb.FinalHTML);
+                //if (lwb.FinalFolder.Length > 0)
+                //{
+                //    Clipboard.SetText(lwb.FinalFolder);
+                //    MessageBox.Show("Process Compelted:" + lwb.FileName);
+                //}
             }
         }
 
@@ -111,11 +112,17 @@ namespace WebAppBuilder
 
         }
 
-        private void btnBase64_Click(object sender, EventArgs e)
+        private async void btnBase64_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
-            var result = txMainFiles.Lines.FileToBase64();
+            var result = await txMainFiles.Lines.FileToBase64();
             txObfuscatedJS.Text = "Base64 finished.";
+            if ( result.Count>0)
+            {
+                txObfuscatedJS.Text = result[0];
+                Clipboard.SetText(result[0]);
+            }
+
             Cursor = Cursors.Arrow;
         }
     }
