@@ -443,6 +443,8 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
         {
             int result = 0;
             excludedFiles = excludedFiles.ToLower();
+            string html = "";
+            string htmlMin = "";
             if (inputFiles.Length < 1)
                 return -1;
 
@@ -459,7 +461,7 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 List<string> excluded = new List<string>();
                 StringBuilder sbJoined = new StringBuilder();
 
-                string html = File.ReadAllText(f);
+                html = File.ReadAllText(f);
                 int index = html.ToLower().IndexOf("</html>");
                 if (index >= 0)
                     html = html.Substring(0, index + 7);
@@ -478,7 +480,8 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
 
                 File.WriteAllText($"{pathToMinify}\\{Path.GetFileNameWithoutExtension(f)}.html",html);
 
-                string html2 = html;    // await "https://www.toptal.com/developers/html-minifier/raw".Minify(html);
+                string html2 = html;    
+                //string html2 =  await "https://www.toptal.com/developers/html-minifier/raw".Minify(html);
                 if (html2.Length > 0)
                     html = html2 + addScripts;
 
@@ -515,6 +518,8 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                     File.WriteAllText($"{pathToMinify}\\{Path.GetFileNameWithoutExtension(f)}.css", sbCSS.ToString());
                 }
 
+                string alljsFileName = $"{Path.GetDirectoryName(f)}\\{Path.GetFileNameWithoutExtension(f)}.js";
+                File.WriteAllText(alljsFileName, "");
                 foreach (string jsFile in jsFiles)
                 {
 
@@ -532,8 +537,12 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                         }
                         File.WriteAllText($"{pathOut}\\{Path.GetFileNameWithoutExtension(jsFile)}.js", text);
                         File.WriteAllText($"{pathToMinify}\\{Path.GetFileNameWithoutExtension(jsFile)}.js", text);
+                        File.AppendAllText(alljsFileName, text);
                     }
                 }
+
+                string nojsName = $"{Path.GetDirectoryName(f)}\\{Path.GetFileNameWithoutExtension(f)}.nojs.html";
+                File.WriteAllText(nojsName, html);
 
                 foreach (string exJSFile in exJsFiles)
                 {
@@ -544,8 +553,10 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 }
 
                 FileName = $"{pathOut}\\{Path.GetFileNameWithoutExtension(f)}.html";
+                string fName2 = $"{Path.GetDirectoryName(f)}\\${Path.GetFileNameWithoutExtension(f)}_Final.html";
                 File.WriteAllText(FileName, html);
                 File.WriteAllText($"{pathToObfuscate}\\{Path.GetFileNameWithoutExtension(f)}.html", html);
+                File.WriteAllText(fName2, html);
 
                 File.WriteAllText($"{pathOut}\\JoinedJS_{Path.GetFileNameWithoutExtension(f)}.js", sbJS.ToString());
                 File.WriteAllText($"{pathToObfuscate}\\JoinedJS_{Path.GetFileNameWithoutExtension(f)}.js", sbJS.ToString());
