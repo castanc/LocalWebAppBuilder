@@ -272,6 +272,7 @@ namespace LocalWebBuilder
                 if ( jsFiles.Count == 0 )
                     jsFiles = html.extractAllBetween("<script src=", ">");
 
+                path = Path.GetDirectoryName(f);
                 string pathOut = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\1_ToMinify";
                 string pathToObfuscate = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\3_ToObfuscate";
 
@@ -375,6 +376,7 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 if (jsFiles.Count == 0)
                     jsFiles = html.extractAllBetween("<script src=", ">");
 
+                path = Path.GetDirectoryName(f);
                 string pathOut = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\1_ToMinify";
                 string pathToObfuscate = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\3_ToObfuscate";
 
@@ -382,7 +384,7 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 pathOut.ResetDir();
                 pathToObfuscate.ResetDir();
 
-
+                
                 foreach (string cssFile in cssFiles)
                 {
 
@@ -475,6 +477,7 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 if (jsFiles.Count == 0)
                     jsFiles = html.extractAllBetween("<script src=", ">");
 
+                path = Path.GetDirectoryName(f);
                 string pathToMinify = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\1_ToMinify";
                 pathToMinify.ResetDir();
 
@@ -518,8 +521,8 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                     File.WriteAllText($"{pathToMinify}\\{Path.GetFileNameWithoutExtension(f)}.css", sbCSS.ToString());
                 }
 
-                string alljsFileName = $"{Path.GetDirectoryName(f)}\\{Path.GetFileNameWithoutExtension(f)}.js";
-                File.WriteAllText(alljsFileName, "");
+                //string alljsFileName = $"{Path.GetDirectoryName(f)}\\{Path.GetFileNameWithoutExtension(f)}.js";
+                //File.WriteAllText(alljsFileName, "");
                 foreach (string jsFile in jsFiles)
                 {
 
@@ -537,12 +540,12 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                         }
                         File.WriteAllText($"{pathOut}\\{Path.GetFileNameWithoutExtension(jsFile)}.js", text);
                         File.WriteAllText($"{pathToMinify}\\{Path.GetFileNameWithoutExtension(jsFile)}.js", text);
-                        File.AppendAllText(alljsFileName, text);
+                        //File.AppendAllText(alljsFileName, text);
                     }
                 }
 
-                string nojsName = $"{Path.GetDirectoryName(f)}\\{Path.GetFileNameWithoutExtension(f)}.nojs.html";
-                File.WriteAllText(nojsName, html);
+                //string nojsName = $"{Path.GetDirectoryName(f)}\\{Path.GetFileNameWithoutExtension(f)}.nojs.html";
+                //File.WriteAllText(nojsName, html);
 
                 foreach (string exJSFile in exJsFiles)
                 {
@@ -553,10 +556,11 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 }
 
                 FileName = $"{pathOut}\\{Path.GetFileNameWithoutExtension(f)}.html";
-                string fName2 = $"{Path.GetDirectoryName(f)}\\${Path.GetFileNameWithoutExtension(f)}_Final.html";
+
+                //string fName2 = $"{Path.GetDirectoryName(f)}\\${Path.GetFileNameWithoutExtension(f)}_Final.html";
                 File.WriteAllText(FileName, html);
                 File.WriteAllText($"{pathToObfuscate}\\{Path.GetFileNameWithoutExtension(f)}.html", html);
-                File.WriteAllText(fName2, html);
+                //File.WriteAllText(fName2, html);
 
                 File.WriteAllText($"{pathOut}\\JoinedJS_{Path.GetFileNameWithoutExtension(f)}.js", sbJS.ToString());
                 File.WriteAllText($"{pathToObfuscate}\\JoinedJS_{Path.GetFileNameWithoutExtension(f)}.js", sbJS.ToString());
