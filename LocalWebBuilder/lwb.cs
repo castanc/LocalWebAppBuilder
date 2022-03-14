@@ -123,10 +123,9 @@ namespace LocalWebBuilder
             foreach (var f in inputFiles)
             {
                 string pathMinified = $"{path}\\{Path.GetFileNameWithoutExtension(f).Replace(".min","")}_Deploy\\2_Minified";
+                pathMinified.ResetDir();
                 string outPath = $"{path}\\{Path.GetFileNameWithoutExtension(f).Replace(".min", "")}_Deploy\\3_Output";
-
                 outPath.ResetDir();
-
 
                 string[] cssFiles = Directory.GetFiles(pathMinified, "*.min.cs1");
 
@@ -580,10 +579,8 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 nPath.ResetDir();
                 File.WriteAllText($"{nPath}\\{Path.GetFileNameWithoutExtension(f)}.min.js1", jsMinified);
 
-                nPath = $"{pathOut}\\JoinedJSFiles";
                 File.WriteAllText($"{nPath}\\{Path.GetFileNameWithoutExtension(f)}.txt", sbJoined.ToString());
 
-                nPath = $"{pathToObfuscate}\\JoinedJSFiles";
                 File.WriteAllText($"{nPath}\\{Path.GetFileNameWithoutExtension(f)}.js", sbJS.ToString());
 
                 string[] files = FileName.Split("*");
