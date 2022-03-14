@@ -477,8 +477,10 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 if (jsFiles.Count == 0)
                     jsFiles = html.extractAllBetween("<script src=", ">");
 
-                path = Path.GetDirectoryName(f);
-                string pathToMinify = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\1_ToMinify";
+                
+                path = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(f)));
+                path = Path.GetPathRoot(f);
+                string pathToMinify = $"{path}\\_Deploy\\1_ToMinify";
                 pathToMinify.ResetDir();
 
                 File.WriteAllText($"{pathToMinify}\\{Path.GetFileNameWithoutExtension(f)}.html",html);
@@ -489,8 +491,8 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                     html = html2 + addScripts;
 
 
-                string pathOut = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\2_Minified";
-                string pathToObfuscate = $"{path}\\{Path.GetFileNameWithoutExtension(f)}_Deploy\\3_ToObfuscate";
+                string pathOut = $"{path}\\_Deploy\\2_Minified";
+                string pathToObfuscate = $"{path}\\_Deploy\\3_ToObfuscate";
 
 
                 pathOut.ResetDir();
