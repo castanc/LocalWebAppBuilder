@@ -68,7 +68,8 @@ namespace WebAppBuilder
                 }
                 Cursor = Cursors.Arrow;
                 txObfuscatedJS.Text = lwb.FileName;
-                Clipboard.SetText(lwb.FinalHTML);
+                if (lwb.FinalHTML.Length> 0)
+                    Clipboard.SetText(lwb.FinalHTML);
                 //if (lwb.FinalFolder.Length > 0)
                 //{
                 //    Clipboard.SetText(lwb.FinalFolder);
