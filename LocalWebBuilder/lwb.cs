@@ -21,6 +21,8 @@ namespace LocalWebBuilder
         public static string pathToObfuscate = "";
         public static string pathToMinify = "";
 
+        //VERSION 12
+
 
         public static string addScripts = @"
 <script id='xzY1'></script>
