@@ -478,7 +478,7 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                     jsFiles = html.extractAllBetween("<script src=", ">");
 
                 
-                path = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(f)));
+                //path = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(f)));
                 path = Path.GetPathRoot(f);
                 string pathToMinify = $"{path}\\_Deploy\\1_ToMinify";
                 pathToMinify.ResetDir();
@@ -564,17 +564,27 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 File.WriteAllText($"{pathToObfuscate}\\{Path.GetFileNameWithoutExtension(f)}.html", html);
                 //File.WriteAllText(fName2, html);
 
-                File.WriteAllText($"{pathOut}\\JoinedJS_{Path.GetFileNameWithoutExtension(f)}.js", sbJS.ToString());
-                File.WriteAllText($"{pathToObfuscate}\\JoinedJS_{Path.GetFileNameWithoutExtension(f)}.js", sbJS.ToString());
+
+                string nPath = $"{pathOut}\\JoinedJS";
+                nPath.ResetDir();
+                File.WriteAllText($"{nPath}\\{Path.GetFileNameWithoutExtension(f)}.js", sbJS.ToString());
+
 
                 string jsMinified = await "https://www.toptal.com/developers/javascript-minifier/raw".Minify(sbJS.ToString());
                 if (jsMinified.Length == 0)
                     jsMinified = sbJS.ToString();
 
-                File.WriteAllText($"{pathOut}\\JoinedJS_{Path.GetFileNameWithoutExtension(f)}.min.js1", jsMinified);
-                File.WriteAllText($"{pathToObfuscate}\\JoinedJS_{Path.GetFileNameWithoutExtension(f)}.min.js1", jsMinified);
+                File.WriteAllText($"{nPath}\\{Path.GetFileNameWithoutExtension(f)}.min.js1", jsMinified);
 
-                File.WriteAllText($"{pathOut}\\JoinedJSFiles_{Path.GetFileNameWithoutExtension(f)}.txt", sbJoined.ToString());
+                nPath = $"{pathToObfuscate}\\JoinedJSFiles";
+                nPath.ResetDir();
+                File.WriteAllText($"{nPath}\\{Path.GetFileNameWithoutExtension(f)}.min.js1", jsMinified);
+
+                nPath = $"{pathOut}\\JoinedJSFiles";
+                File.WriteAllText($"{nPath}\\{Path.GetFileNameWithoutExtension(f)}.txt", sbJoined.ToString());
+
+                nPath = $"{pathToObfuscate}\\JoinedJSFiles";
+                File.WriteAllText($"{nPath}\\{Path.GetFileNameWithoutExtension(f)}.js", sbJS.ToString());
 
                 string[] files = FileName.Split("*");
                 files.AddMinified3();
