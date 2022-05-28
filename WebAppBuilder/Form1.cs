@@ -53,7 +53,14 @@ namespace WebAppBuilder
                 txObfuscatedJS.Text = "";
                 if (chbAutoMinify.Checked)
                 {
-                    var result = await txMainFiles.Lines.GenerateLocalAppAutoMinify(txExckudeJS.Text);
+                    try
+                    {
+                        var result = await txMainFiles.Lines.GenerateLocalAppAutoMinify(txExckudeJS.Text);
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show("Exception: " + ex.Message);
+                    }
                 }
                 else
                 {
@@ -61,7 +68,8 @@ namespace WebAppBuilder
                 }
                 Cursor = Cursors.Arrow;
                 txObfuscatedJS.Text = lwb.FileName;
-                Clipboard.SetText(lwb.FinalHTML);
+                if (lwb.FinalHTML.Length> 0)
+                    Clipboard.SetText(lwb.FinalHTML);
                 //if (lwb.FinalFolder.Length > 0)
                 //{
                 //    Clipboard.SetText(lwb.FinalFolder);
@@ -124,6 +132,19 @@ namespace WebAppBuilder
             }
 
             Cursor = Cursors.Arrow;
+        }
+
+        private void btnSafeWords_Click(object sender, EventArgs e)
+        {
+            txMainFiles.Text = @"C:\MyWorks\_Recryptico2022\SafeWords2\_AppMain\SafeWords.html";
+            btnGenerateLocalWebApp_Click(null, null);
+        }
+
+        private void btnLauncher_Click(object sender, EventArgs e)
+        {
+            txMainFiles.Text = @"C:\MyWorks\_Recryptico2022\SafeWords2\AppLauncher\launcher.html";
+            btnGenerateLocalWebApp_Click(null, null);
+
         }
     }
 }
