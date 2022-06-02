@@ -45,8 +45,10 @@ namespace WebAppBuilder
         {
         }
 
+        //aqui es nuevo
         private async  void btnGenerateLocalWebApp_Click(object sender, EventArgs e)
         {
+            int result = 0;
             if ( txMainFiles.Lines.Length > 0 )
             {
                 Cursor = Cursors.WaitCursor;
@@ -55,7 +57,10 @@ namespace WebAppBuilder
                 {
                     try
                     {
-                        var result = await txMainFiles.Lines.GenerateLocalAppAutoMinify(txExckudeJS.Text);
+                        if ( chbSplit.Checked)
+                            result = await txMainFiles.Lines.GenerateLocalAppAutoMinifySplit(txExckudeJS.Text);
+                        else
+                            result = await txMainFiles.Lines.GenerateLocalAppAutoMinify(txExckudeJS.Text);
                     }
                     catch(Exception ex)
                     {
@@ -64,7 +69,7 @@ namespace WebAppBuilder
                 }
                 else
                 {
-                    var result = txMainFiles.Lines.GenerateLocalApp2(txExckudeJS.Text);
+                     result = txMainFiles.Lines.GenerateLocalApp2(txExckudeJS.Text);
                 }
                 Cursor = Cursors.Arrow;
                 txObfuscatedJS.Text = lwb.FileName;
@@ -136,12 +141,14 @@ namespace WebAppBuilder
 
         private void btnSafeWords_Click(object sender, EventArgs e)
         {
+            chbSplit.Checked = true;
             txMainFiles.Text = @"C:\MyWorks\_Recryptico2022\SafeWords2\_AppMain\SafeWords.html";
             btnGenerateLocalWebApp_Click(null, null);
         }
 
         private void btnLauncher_Click(object sender, EventArgs e)
         {
+            chbSplit.Checked = true;
             txMainFiles.Text = @"C:\MyWorks\_Recryptico2022\SafeWords2\AppLauncher\launcher.html";
             btnGenerateLocalWebApp_Click(null, null);
 

@@ -83,6 +83,41 @@ namespace LocalWebBuilder
         }
 
 
+        public static List<string> extractAllBetweenInclusive(this string text, string start,
+    string end, string exclude = "https://")
+        {
+            int startIndex = 0;
+            string result = "XX";
+            start = start.ToLower();
+            end = end.ToLower();
+            string text2 = text.ToLower();
+            List<string> results = new List<string>();
+
+            int index = 0;
+            int origIndex = 0;
+            while (index >= 0)
+            {
+                index = text2.IndexOf(start, startIndex);
+                if (index >= startIndex)
+                {
+                    origIndex = index;
+                    index += start.Length;
+                    int index2 = text2.IndexOf(end, index);
+                    if (index2 > index)
+                    {
+                        result = text.Substring(origIndex, index2 - origIndex + end.Length);
+                        if ( !result.ToLower().Contains(exclude))
+                            results.Add(result);
+
+                        startIndex = index2 + 1;
+                    }
+                }
+            }
+
+            return results;
+        }
+
+
         public static string RemoveAllBetween(this string text, string start,
             string end, string exception = ":/")
         {

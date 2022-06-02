@@ -44,6 +44,7 @@ namespace WebAppBuilder
             this.btnBase64 = new System.Windows.Forms.Button();
             this.btnLauncher = new System.Windows.Forms.Button();
             this.btnSafeWords = new System.Windows.Forms.Button();
+            this.chbSplit = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -139,7 +140,7 @@ namespace WebAppBuilder
             // 
             // txObfuscatedJS
             // 
-            this.txObfuscatedJS.Location = new System.Drawing.Point(73, 540);
+            this.txObfuscatedJS.Location = new System.Drawing.Point(80, 527);
             this.txObfuscatedJS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txObfuscatedJS.Multiline = true;
             this.txObfuscatedJS.Name = "txObfuscatedJS";
@@ -161,7 +162,9 @@ namespace WebAppBuilder
             // chbAutoMinify
             // 
             this.chbAutoMinify.AutoSize = true;
-            this.chbAutoMinify.Location = new System.Drawing.Point(80, 756);
+            this.chbAutoMinify.Checked = true;
+            this.chbAutoMinify.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chbAutoMinify.Location = new System.Drawing.Point(237, 881);
             this.chbAutoMinify.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chbAutoMinify.Name = "chbAutoMinify";
             this.chbAutoMinify.Size = new System.Drawing.Size(108, 24);
@@ -200,11 +203,22 @@ namespace WebAppBuilder
             this.btnSafeWords.UseVisualStyleBackColor = true;
             this.btnSafeWords.Click += new System.EventHandler(this.btnSafeWords_Click);
             // 
+            // chbSplit
+            // 
+            this.chbSplit.AutoSize = true;
+            this.chbSplit.Location = new System.Drawing.Point(87, 881);
+            this.chbSplit.Name = "chbSplit";
+            this.chbSplit.Size = new System.Drawing.Size(116, 24);
+            this.chbSplit.TabIndex = 20;
+            this.chbSplit.Text = "Split Sources";
+            this.chbSplit.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(905, 917);
+            this.Controls.Add(this.chbSplit);
             this.Controls.Add(this.btnSafeWords);
             this.Controls.Add(this.btnLauncher);
             this.Controls.Add(this.btnBase64);
@@ -222,6 +236,7 @@ namespace WebAppBuilder
             this.Controls.Add(this.label1);
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Web App Packer Vsn 1.3";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
@@ -246,6 +261,7 @@ namespace WebAppBuilder
         private System.Windows.Forms.Button btnBase64;
         private System.Windows.Forms.Button btnLauncher;
         private System.Windows.Forms.Button btnSafeWords;
+        private System.Windows.Forms.CheckBox chbSplit;
     }
 }
 
