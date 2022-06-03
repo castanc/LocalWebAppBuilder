@@ -22,18 +22,10 @@ namespace LocalWebBuilder
         public static string pathFullHtml = "";
         public static string pathToMinify = "";
         public static string mainFileName = "";
+        public static string pathOut2 = "";
 
 
         public static string addScripts = @"
-<!--Start CSS-->
-<!--ALLCSS-->
-<!--End CSS-->
-
-
-<!--Start scripts-->
-<!--ALLSCRIPTS-->
-<!--End scripts-->
-
 <script id='xzY1'></script>
 <script id='xzY2'></script>
 <script id='log'>
@@ -49,6 +41,12 @@ namespace LocalWebBuilder
     //console.log('all', document.scripts);
 </script>
 <script id='f5'>
+function removeElement(divId) {
+	let div = document.getElementById(divId);
+	if (div)
+		div.remove();
+}
+
     var xzY1 = '';
     if (xzY1.length > 0) {
         let sc = document.getElementById('xzY1');
@@ -249,10 +247,12 @@ namespace LocalWebBuilder
 
 
 
+        //deprectated not used any more,. with t he new split methods
         public static int GenerateLocalApp(this string[] inputFiles,
      string excludedFiles)
         {
             int result = 0;
+            string ffName = "";
             excludedFiles = excludedFiles.ToLower();
             if (inputFiles.Length < 1)
                 return -1;
@@ -320,7 +320,7 @@ namespace LocalWebBuilder
                             sbJoined.AppendLine(jsFile);
                             sbJS.AppendLine(text);
                         }
-                        File.WriteAllText($"{pathOut}\\{Path.GetFileNameWithoutExtension(jsFile)}.js", text);
+                        File.WriteAllText($"{pathOut}\\{ffName}.js", text);
                     }
                 }
 
@@ -353,10 +353,12 @@ namespace LocalWebBuilder
         }
 
 
+        //deprectated
         public static int GenerateLocalApp2(this string[] inputFiles,
 string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
         {
             int result = 0;
+            string ffName = "";
             excludedFiles = excludedFiles.ToLower();
             if (inputFiles.Length < 1)
                 return -1;
@@ -379,7 +381,8 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 if (index >= 0)
                     html = html.Substring(0, index + 7);
 
-                html = html + addScripts;
+
+                html = $"{html}\n{addScripts}";
 
                 cssFiles = html.extractAllBetween("\"stylesheet\" href=\"", "\">");
                 if (cssFiles.Count == 0)
@@ -424,7 +427,7 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                             sbJoined.AppendLine(jsFile);
                             sbJS.AppendLine(text);
                         }
-                        File.WriteAllText($"{pathOut}\\{Path.GetFileNameWithoutExtension(jsFile)}.js", text);
+                        File.WriteAllText($"{pathOut}\\{ffName}.js", text);
                     }
                 }
 
@@ -458,6 +461,7 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
 string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
         {
             int result = 0;
+            string ffName = "";
             excludedFiles = excludedFiles.ToLower();
             string html = "";
             string htmlMin = "";
@@ -559,9 +563,9 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                             sbJoined.AppendLine(jsFile);
                             sbJS.AppendLine(text);
                         }
-                        File.WriteAllText($"{pathOut}\\{Path.GetFileNameWithoutExtension(jsFile)}.js", text);
-                        File.WriteAllText($"{pathFullHtml}\\{Path.GetFileNameWithoutExtension(jsFile)}.html", $"<script id='{Path.GetFileNameWithoutExtension(jsFile)}'>{text}</script>\n");
-                        File.WriteAllText($"{pathToMinify}\\{Path.GetFileNameWithoutExtension(jsFile)}.js", text);
+                        File.WriteAllText($"{pathOut}\\{ffName}.js", text);
+                        File.WriteAllText($"{pathFullHtml}\\{ffName}.html", $"<script id='{ffName}'>{text}</script>\n");
+                        File.WriteAllText($"{pathToMinify}\\{ffName}.js", text);
                         //File.AppendAllText(alljsFileName, text);
                     }
                 }
@@ -626,6 +630,7 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
             excludedFiles = excludedFiles.ToLower();
             string html = "";
             string htmlMin = "";
+            string ffName = "";
 
             string fName = "";
 
@@ -650,6 +655,13 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 mainFileName = "_" + Path.GetFileNameWithoutExtension(f);
                 path = $"{Path.GetPathRoot(f)}\\_Deploy{mainFileName}";
                 path.ResetDir();
+
+                string pathOut2NoMin = $"{path}\\0_Out2_NoMin";
+                pathOut2NoMin.ResetDir();
+
+                string pathOut2Min = $"{path}\\0_Out2_Min";
+                pathOut2Min.ResetDir();
+
 
                 pathToMinify = $"{path}\\1_Original";
                 pathToMinify.ResetDir();
@@ -709,33 +721,39 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                     {
                         text = File.ReadAllText(fName);
                         sbCSS.AppendLine(text);
+                        File.WriteAllText($"{pathToMinify}\\{ffName}.css", text);
+                        //text = text.RemoveAllBetween("//", "\n");
+                        //text = text.removeSpaces();
                         if (!fName.ToLower().EndsWith(".min.css") &&
                             !text.Contains("//nominify"))
                         {
                             cssMinified = await "https://www.toptal.com/developers/cssminifier/raw".Minify(text);
                             ok = cssMinified.Length > 0;
                         }
+                        ffName = Path.GetFileNameWithoutExtension(cssFile);
                         if (ok)
                         {
                             sbCSSMinified.AppendLine(cssMinified);
-                            File.WriteAllText($"{pathMinified}\\{Path.GetFileNameWithoutExtension(cssFile)}.min.css", cssMinified);
-                            File.WriteAllText($"{pathFullHtml}\\{Path.GetFileNameWithoutExtension(cssFile)}.min.html",
+                            File.WriteAllText($"{pathMinified}\\{ffName}.min.css", cssMinified);
+                            File.WriteAllText($"{pathFullHtml}\\{ffName}.min.html",
                                 $"<style>{cssMinified}</style>\n");
                         }
                         else
                         {
                             sbCSSMinified.AppendLine(text);
-                            File.WriteAllText($"{pathMinified}\\{Path.GetFileNameWithoutExtension(cssFile)}.nomin.css", text);
-                            File.WriteAllText($"{pathFullHtml}\\{Path.GetFileNameWithoutExtension(cssFile)}.nomin.html",
+                            File.WriteAllText($"{pathMinified}\\{ffName}.nomin.css", text);
+                            File.WriteAllText($"{pathFullHtml}\\{ffName}.nomin.html",
                                 $"<style>{text}</style>\n");
                         }
 
                     }
                 }
 
-                File.WriteAllText($"{pathMinified}\\{mainFileName}.full.min.css", sbCSSMinified.ToString());
-                File.WriteAllText($"{pathFullHtml}\\{mainFileName}.full.min.css", sbCSSMinified.ToString());
-                File.WriteAllText($"{pathToMinify}\\{mainFileName}.full.css.html", sbCSS.ToString());
+                File.WriteAllText($"{pathMinified}\\{mainFileName}.full.min.css", $"<style>${sbCSSMinified}</style>");
+                File.WriteAllText($"{pathOut}\\{mainFileName}.full.min.css", $"<style>${sbCSSMinified}</style>");
+                File.WriteAllText($"{pathFullHtml}\\{mainFileName}.full.min.css", $"<style>${sbCSSMinified}</style>");
+                File.WriteAllText($"{pathToMinify}\\{mainFileName}.full.css", $"<style>${sbCSS}</style>");
+
 
 
                 sbJS = new StringBuilder();
@@ -756,8 +774,11 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                     fName = $"{Path.GetDirectoryName(f)}\\{jsFile}";
                     if (File.Exists(fName))
                     {
+                        ffName = Path.GetFileNameWithoutExtension(jsFile);
                         text = File.ReadAllText(fName);
-                        text = $"//script:${Path.GetFileNameWithoutExtension(fName)}${System.Environment.NewLine}{text}";
+                        File.WriteAllText($"{pathToMinify}\\{ffName}.js", text);
+                        //text = text.RemoveAllBetween("//", System.Environment.NewLine);
+                        //text = text.removeSpaces();
                         sbJS.AppendLine(text);
 
                         if (!fName.ToLower().EndsWith("min.js") &&
@@ -766,28 +787,25 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                             jsMinified = await "https://www.toptal.com/developers/javascript-minifier/raw".Minify(text);
                             ok = jsMinified.Length > 0;
                         }
+                        ffName = Path.GetFileNameWithoutExtension(jsFile);
                         if (ok)
                         {
                             sbJSMinified.AppendLine(jsMinified);
-                            File.WriteAllText($"{pathFullHtml}\\{Path.GetFileNameWithoutExtension(jsFile)}.min.js.html", $"<script id='{Path.GetFileNameWithoutExtension(jsFile)}'>{jsMinified}</script>\r\n");
-                            File.WriteAllText($"{pathToMinify}\\{Path.GetFileNameWithoutExtension(jsFile)}.js", text);
-                            File.WriteAllText($"{pathMinified}\\{Path.GetFileNameWithoutExtension(jsFile)}.min.js", jsMinified);
+                            File.WriteAllText($"{pathFullHtml}\\{ffName}.min.js.html", $"<script id='{ffName}'>{jsMinified}</script>\r\n");
+                            File.WriteAllText($"{pathMinified}\\{ffName}.min.js", jsMinified);
                         }
                         else
                         {
                             sbJSMinified.AppendLine(text);
-                            File.WriteAllText($"{pathFullHtml}\\{Path.GetFileNameWithoutExtension(jsFile)}.min.js.html", $"<script id='{Path.GetFileNameWithoutExtension(jsFile)}'>{text}</script>\r\n");
-                            File.WriteAllText($"{pathToMinify}\\{Path.GetFileNameWithoutExtension(jsFile)}.nomin.js", text);
+                            File.WriteAllText($"{pathFullHtml}\\{ffName}.nomin.js.html", $"<script id='{ffName}'>{text}</script>\r\n");
+                            File.WriteAllText($"{pathMinified}\\{ffName}.nomin.js", text);
                         }
-
-
-                        if (excludedFiles.Contains(jsFile.ToLower()))
-                            exJsFiles.Add(text);
                     }
                 }
 
-                
+
                 File.WriteAllText($"{pathOut}\\{mainFileName}.MD5Check.js.html", addScripts);
+                addScripts = addScripts.removeSpaces();
                 File.WriteAllText($"{pathMinified}\\{mainFileName}.MD5Check.js.html", addScripts);
                 File.WriteAllText($"{pathFullHtml}\\{mainFileName}.MD5Check.js.html", addScripts);
 
@@ -796,60 +814,178 @@ string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
                 File.WriteAllText($"{pathFullHtml}\\{mainFileName}.full.js.html", $"<script id='{mainFileName}'>{sbJS}</script>");
                 File.WriteAllText($"{pathMinified}\\{mainFileName}.full.min.js", sbJSMinified.ToString());
 
-                index = html.IndexOf("  ");
-                while (index >= 0)
-                {
-                    html = html.Replace("  ", "");
-                    index = html.IndexOf("  ");
-                }
-
-
-                index = html.IndexOf("\r\n\r\n");
-                while (index >= 0)
-                {
-                    html = html.Replace("\r\n\r\n", "\r\n");
-                    index = html.IndexOf("\r\n\r\n");
-                }
-
-                index = html.IndexOf("\n\n");
-                while (index >= 0)
-                {
-                    html = html.Replace("\n\n", "\n");
-                    index = html.IndexOf("\n\n");
-                }
-
+                //remove links to local css an jscript
                 foreach (string s in localCSS)
                     html = html.Replace(s, "");
 
                 foreach (string s in localJS)
                     html = html.Replace(s, "");
 
+
                 string nojsName = $"{pathFullHtml}\\{mainFileName}.nojs.html";
                 File.WriteAllText(nojsName, html);
 
-//                foreach (string exJSFile in exJsFiles)
-//                {
-//                    html = html + $@"<script>
-//{exJSFile}
-//</script>
-//";
-//                }
 
                 File.WriteAllText($"{pathToObfuscate}\\{mainFileName}.html", html);
                 File.WriteAllText($"{pathFullHtml}\\{mainFileName}.html", html);
 
                 File.WriteAllText($"{nPath}\\{mainFileName}.js", sbJS.ToString());
 
-                html = html.Replace("<!--ALLCSS-->", $"<style>{sbCSSMinified}</style>");
-                html = html.Replace("<!--ALLSCRIPTS-->", $"<script id='allscripts'>{sbJSMinified}</script>");
-                File.WriteAllText($"{pathFullHtml}\\{mainFileName}.final.full.html", html);
+                html = html.Replace("</head>", $"<script id='allJS'>{sbJSMinified}</script>{System.Environment.NewLine}<style>{sbCSSMinified}</style>\r\n</head>");
+
+
+                lwb.FileName = $"{pathFullHtml}\\{mainFileName}.final.full.html";
+                File.WriteAllText(lwb.FileName, html);
+                File.WriteAllText($"{nPath}\\{mainFileName}.final.full.html", html);
                 File.WriteAllText($"{pathToObfuscate}\\{mainFileName}final.full.html", html);
+                File.WriteAllText($"{pathOut}\\{mainFileName}.final.full.html", html);
 
                 lwb.FinalHTML = html;
+                lwb.FileName = $"{nPath}\\{mainFileName}.final.full.html";
+
+
             }
 
             return result;
         }
+
+
+        public static async Task<int> GenerateLocalAppNoMinifySplit(this string[] inputFiles,
+string excludedFiles, bool minifyJS = true, bool obfuscateJS = true)
+        {
+            if (inputFiles.Length < 1)
+                return -1;
+
+            int result = 0;
+            excludedFiles = excludedFiles.ToLower();
+            string html = "";
+            string htmlMin = "";
+            string ffName = "";
+
+            string fName = "";
+
+            foreach (string f in inputFiles)
+            {
+                List<string> cssFiles = new List<string>();
+                List<string> jsFiles = new List<string>();
+                List<string> exCssFiles = new List<string>();
+                List<string> exJsFiles = new List<string>();
+                StringBuilder sbCSS = new StringBuilder();
+                StringBuilder sbJS = new StringBuilder();
+                List<string> excluded = new List<string>();
+                StringBuilder sbJoined = new StringBuilder();
+                StringBuilder sbCSSMinified = new StringBuilder();
+                StringBuilder sbJSMinified = new StringBuilder();
+                List<string> finalCSS = new List<string>();
+                List<string> finalJS = new List<string>();
+                List<string> localCSS = new List<string>();
+                List<string> localJS = new List<string>();
+
+
+                mainFileName = "_" + Path.GetFileNameWithoutExtension(f);
+                path = $"{Path.GetPathRoot(f)}\\_Deploy{mainFileName}";
+                path.ResetDir();
+
+                string pathOut2NoMin = $"{path}\\0_Out2_NoMin";
+                pathOut2NoMin.ResetDir();
+
+
+                pathFullHtml = $"{path}\\1_FullHtml";
+                pathFullHtml.ResetDir();
+
+                html = await File.ReadAllTextAsync(f);
+                int index = html.ToLower().IndexOf("</html>");
+                if (index >= 0)
+                    html = html.Substring(0, index + 7);
+
+
+                cssFiles = html.extractAllBetween("\"stylesheet\" href=\"", "\">");
+                if (cssFiles.Count == 0)
+                    cssFiles = html.extractAllBetween("stylesheet href=", ">");
+
+                jsFiles = html.extractAllBetween("<script src=\"", "\">");
+                if (jsFiles.Count == 0)
+                    jsFiles = html.extractAllBetween("<script src=", ">");
+
+                localCSS = html.extractAllBetweenInclusive("<link rel=\"stylesheet\" href=\"", ".css\">");
+                localJS = html.extractAllBetweenInclusive("<script src=\"", "\"></script>");
+
+                await File.WriteAllTextAsync($"{pathToMinify}\\{mainFileName}.html", html);
+
+                string html2 = html;
+                //string html2 =  await "https://www.toptal.com/developers/html-minifier/raw".Minify(html);
+                if (html2.Length > 0)
+                    html = html2 + addScripts;
+
+
+                sbCSS = new StringBuilder();
+                bool ok = false;
+                pathMinified = $"{path}\\2_Minified\\css";
+                pathMinified.ResetDir();
+                pathFullHtml = $"{path}\\5_FullHtml\\css";
+                pathFullHtml.ResetDir();
+
+                string text = "";
+                foreach (string cssFile in cssFiles)
+                {
+                    ok = false;
+                    fName = $"{Path.GetDirectoryName(f)}\\{cssFile}";
+                    if (File.Exists(fName))
+                    {
+                        text = await File.ReadAllTextAsync(fName);
+                        sbCSS.AppendLine(text);
+                    }
+                }
+
+                await File.WriteAllTextAsync($"{pathOut2NoMin}\\{mainFileName}.full.css", $"<style>{sbCSS}</style>");
+                await File.WriteAllTextAsync($"{pathFullHtml}\\{mainFileName}.full.css.html", $"<style>{sbCSSMinified}</style>");
+
+
+                sbJS = new StringBuilder();
+
+
+                foreach (string jsFile in jsFiles)
+                {
+                    ok = false;
+                    fName = $"{Path.GetDirectoryName(f)}\\{jsFile}";
+                    if (File.Exists(fName))
+                    {
+                        sbJS.AppendLine(await File.ReadAllTextAsync(fName));
+                    }
+                }
+
+
+                await File.WriteAllTextAsync($"{pathFullHtml}\\{mainFileName}.MD5Check.js.html", addScripts);
+                await File.WriteAllTextAsync($"{pathOut2NoMin}\\{mainFileName}.MD5Check.js.html", addScripts);
+
+
+                await File.WriteAllTextAsync($"{pathOut2NoMin}\\{mainFileName}.full.js", sbJS.ToString());
+                await File.WriteAllTextAsync($"{pathFullHtml}\\{mainFileName}.full.js.html", $"<script id='{mainFileName}'>{sbJS}</script>");
+
+                //remove links to local css an jscript
+                foreach (string s in localCSS)
+                    html = html.Replace(s, "");
+
+                foreach (string s in localJS)
+                    html = html.Replace(s, "");
+
+
+                html = html.Replace("</head>", $"<script id='{mainFileName}'>{sbJS}</script>\r\n{addScripts}{System.Environment.NewLine}<style>{sbCSS}</style>\r\n</head>");
+
+
+                lwb.FileName = $"{pathOut2NoMin}\\{mainFileName}.final.full.html";
+                await File.WriteAllTextAsync(lwb.FileName, html);
+                lwb.FileName = $"{pathFullHtml}\\{mainFileName}.final.full.html";
+                await File.WriteAllTextAsync($"{pathFullHtml}\\{mainFileName}.final.full.html", html);
+
+               lwb.FinalHTML = html;
+
+            }
+
+            return result;
+        }
+
+
 
 
     }

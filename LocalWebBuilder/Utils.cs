@@ -27,7 +27,7 @@ namespace LocalWebBuilder
                     }
                     catch (Exception ex)
                     {
-
+                        string s = ex.Message;
                     }
                 }
             }
@@ -117,45 +117,32 @@ namespace LocalWebBuilder
             return results;
         }
 
+        public static string removeSpaces(this string text)
+        {
+            int len = text.Length;
+            text = text.Replace(System.Environment.NewLine, " ");
+            text = text.Replace("\n", " ");
+            text = text.Replace("\t", " ");
+            text = text.Replace("  ", "");
+            int len2 = text.Length;
+            return text;
+        }
+
 
         public static string RemoveAllBetween(this string text, string start,
             string end, string exception = ":/")
         {
-            int startIndex = 0;
-            start = start.ToLower();
-            end = end.ToLower();
-            string text2 = text.ToLower();
-
-            int index = text2.IndexOf(start);
-            List<string> results = new List<string>();
+            int index = text.IndexOf(start);
             string result = "";
             while (index >= 0)
             {
-                if (index >= startIndex)
+                int index2 = text.IndexOf(end, index);
+                if (index2 > index)
                 {
-                    int index2 = text2.IndexOf(end, index);
-                    if (index2 > index)
-                    {
-                        result = text.Substring(index, index2 - index+end.Length);
-
-                        if (!result.ToLower().Contains(exception))
-                        {
-                            if (text.Contains(result))
-                            {
-                                text = text.Replace(result, "");
-                                results.Add(result);
-                                text2 = text.ToLower();
-                                index = text2.ToLower().IndexOf(start, startIndex);
-                                //text = text.Substring(0, index) + text.Substring(index2 + end.Length);\
-                            }
-                        }
-                        else
-                        {
-                            startIndex = index2 + end.Length;
-                            index = text2.ToLower().IndexOf(start, startIndex);
-                        }
-                    }
-                    
+                    result = text.Substring(index, index2 - index+end.Length);
+                    if (text.Contains(result))
+                        text = text.Replace(result, "");
+                    index = text.IndexOf(start, 0);
                 }
             }
 
