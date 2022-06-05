@@ -23,6 +23,7 @@ namespace LocalWebBuilder
         public static string pathToMinify = "";
         public static string mainFileName = "";
         public static string pathOut2 = "";
+        public static string version = "6.0";
 
 
         public static string addScripts = @"
