@@ -72,7 +72,7 @@ namespace LocalWebBuilder
                     int index2 = text2.IndexOf(end, index);
                     if (index2 > index)
                     {
-                        result = text.Substring(index, index2 - index);
+                        result = text.Substring(index, index2 - index).ToLower();
                         results.Add(result);
                         startIndex = index2 + 1;
                     }
@@ -107,7 +107,7 @@ namespace LocalWebBuilder
                     {
                         result = text.Substring(origIndex, index2 - origIndex + end.Length);
                         if ( !result.ToLower().Contains(exclude))
-                            results.Add(result);
+                            results.Add(result.ToLower());
 
                         startIndex = index2 + 1;
                     }

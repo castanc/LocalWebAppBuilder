@@ -69,7 +69,7 @@ namespace WebAppBuilder
                 }
                 else
                 {
-                     result = await txMainFiles.Lines.GenerateLocalAppNew(txExckudeJS.Text);
+                     result = await txMainFiles.Lines.GenerateLocalAppNoMin();
                 }
                 Cursor = Cursors.Arrow;
                 txObfuscatedJS.Text = lwb.FileName;
@@ -137,7 +137,7 @@ namespace WebAppBuilder
         private void btnSafeWords_Click(object sender, EventArgs e)
         {
             txMainFiles.Text = @"C:\MyWorks\_Recryptico2022\SafeWords2\_AppMain\SafeWords.html";
-            txExckudeJS.Text = ",sjcl,fsaccess,keyboard,menu,MD5Helper,";
+            //txExckudeJS.Text = ",sjcl,fsaccess,keyboard,menu,MD5Helper,";
             btnGenerateLocalWebApp_Click(null, null);
         }
 
