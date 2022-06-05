@@ -117,6 +117,20 @@ namespace LocalWebBuilder
             return results;
         }
 
+        public static string removeAllBetween(this string text, string start,
+string end)
+        {
+            int index = text.IndexOf(start);
+            if (index >= 0)
+            {
+                int index2 = text.IndexOf(end, index);
+                if (index2 > index)
+                    text = $"{text.Substring(0, index)}{text.Substring(index2 + end.Length)}";
+                }
+            return text;
+        }
+
+
         public static string removeSpaces(this string text)
         {
             int len = text.Length;
